@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Translate app</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+   </head>
+   <style>
+      p {font-size: 20px} 
+      h1{text-align: center;}
+   </style>
+   <body>
+      <div class="container">
+         <h1 class="mt-5 mb-5">Translate App</h1>
+         <form method="POST" id="post-form" >
+            {% csrf_token %}
+            <div class="form-row mt-4">
+               <div class="col">
+                  <textarea type="text" id="trans" name="trans"  class="form-control" placeholder="Enter Your Text" rows="5" required="required"></textarea>
+               </div>
+            </div>
+            <input type="submit" name="translate_submit" class="btn btn-primary mt-2"/>
+         </form>
+         <h2 class="translated-text"></h2>
+         <h2 class="error"></h2>
+      </div>
+   </body>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+      <script type="text/javascript">
+
+
+            $(document).ready(function(){
+               $("#post-form").submit(function(e){
+                  e.preventDefault();
+                  var csrfToken = $('input[name=csrfmiddlewaretoken]').val();
+                  console.log($('#trans').val())
+                  $.ajax({
+                     type:'POST',
+                     url:"{% url 'translate' %}",
+                     data:{
+                        trans:$('#trans').val(),
+                        csrfmiddlewaretoken: csrfToken,
+                  },
+                  success:function(data){
+                     console.log(data);
+                  $('.translated-text').html(data.translated_text);
+                  },
+                  error: function(data){
+                  console.log("error");
+                  $('.error').html('Error occurred during translation.');
+               }
+            })
+         })
+      })
+         </script>
+</html>
